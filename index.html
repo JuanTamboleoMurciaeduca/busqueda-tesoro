@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rutas de pistas - 1º Bachillerato</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <p class="eyebrow">Actividad cooperativa</p>
+        <h1>Rutas de pistas</h1>
+        <p class="intro">Resolved las pruebas de vuestro grupo. Cada acierto revela una ubicación física a la que debéis ir.</p>
+      </div>
+    </header>
+
+    <main class="container app-shell">
+      <section id="login-screen" class="screen panel" aria-labelledby="login-title">
+        <h2 id="login-title">Entrar en la actividad</h2>
+        <p>Escribid el código de grupo que os ha dado el profesor.</p>
+        <form id="group-form" class="form-grid">
+          <div class="field">
+            <label for="group-code">Código de grupo</label>
+            <input id="group-code" name="group-code" type="text" autocomplete="off" spellcheck="false" placeholder="G01" required>
+          </div>
+          <button class="button primary" type="submit">Entrar</button>
+        </form>
+        <p id="login-message" class="message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="route-screen" class="screen hidden" aria-labelledby="route-title">
+        <div class="panel">
+          <div class="topline">
+            <div>
+              <p class="eyebrow">Grupo</p>
+              <h2 id="route-title"></h2>
+            </div>
+            <button id="change-group" class="button compact" type="button">Cambiar grupo</button>
+          </div>
+
+          <div class="progress-wrap" aria-label="Progreso general">
+            <div class="progress-info">
+              <span id="progress-text">0 de 6 pruebas resueltas</span>
+              <strong id="progress-percent">0%</strong>
+            </div>
+            <div class="progress-bar" aria-hidden="true">
+              <span id="progress-fill"></span>
+            </div>
+          </div>
+
+          <div class="stats-grid" aria-label="Resumen de progreso">
+            <div class="stat">
+              <span class="stat-label">Pendientes</span>
+              <strong id="pending-count">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Resueltas</span>
+              <strong id="solved-count">0</strong>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Códigos verificados</span>
+              <strong id="location-count">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <section class="panel" aria-labelledby="list-title">
+          <h2 id="list-title">Pruebas del grupo</h2>
+          <ol id="challenge-list" class="challenge-list"></ol>
+        </section>
+
+        <section id="final-screen" class="panel final-panel hidden" aria-labelledby="final-title">
+          <p class="eyebrow">Entrega</p>
+          <h2 id="final-title">Resumen final</h2>
+          <dl class="summary-list">
+            <div><dt>Grupo</dt><dd id="final-group"></dd></div>
+            <div><dt>Pruebas resueltas</dt><dd id="final-solved"></dd></div>
+            <div><dt>Códigos verificados</dt><dd id="final-verified"></dd></div>
+            <div><dt>Ubicaciones desbloqueadas</dt><dd id="final-locations"></dd></div>
+            <div><dt>Pistas usadas</dt><dd id="final-hints"></dd></div>
+            <div><dt>Tiempo total</dt><dd id="final-time"></dd></div>
+            <div><dt>Código final de entrega</dt><dd id="final-code" class="final-code"></dd></div>
+          </dl>
+          <div class="button-row">
+            <button id="copy-final-summary" class="button primary" type="button">Copiar resumen</button>
+            <button id="export-json" class="button" type="button">Exportar JSON</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="challenge-screen" class="screen panel hidden" aria-labelledby="challenge-title">
+        <button id="back-to-route" class="button compact" type="button">Volver a la lista</button>
+        <p class="eyebrow" id="challenge-type"></p>
+        <h2 id="challenge-title"></h2>
+        <p id="challenge-statement" class="statement"></p>
+
+        <div id="unlocked-location-box" class="revealed-box hidden" role="status" aria-live="polite"></div>
+        <section id="code-verification-box" class="code-check hidden" aria-labelledby="code-verification-title">
+          <h3 id="code-verification-title">Verificar código encontrado</h3>
+          <form id="code-form" class="form-grid">
+            <div class="field">
+              <label for="code-input">Código de la ubicación</label>
+              <input id="code-input" name="code-input" type="text" autocomplete="off" spellcheck="false" placeholder="GXX-ABC123">
+            </div>
+            <button class="button primary" type="submit">Verificar código</button>
+          </form>
+          <p id="code-message" class="message" role="status" aria-live="polite"></p>
+        </section>
+        <div id="hint-list" class="hint-list" aria-live="polite"></div>
+
+        <form id="answer-form" class="form-grid">
+          <div class="field">
+            <label for="answer-input">Respuesta</label>
+            <input id="answer-input" name="answer-input" type="text" autocomplete="off" spellcheck="false">
+          </div>
+          <div class="button-row">
+            <button class="button success" type="submit">Comprobar</button>
+            <button id="show-hint" class="button" type="button">Ver pista</button>
+          </div>
+        </form>
+
+        <p id="challenge-message" class="message" role="status" aria-live="polite"></p>
+        <p id="hint-count" class="meta"></p>
+      </section>
+
+      <section id="teacher-screen" class="screen hidden" aria-labelledby="teacher-title">
+        <div class="panel">
+          <div class="topline">
+            <div>
+              <p class="eyebrow">Modo profesor</p>
+              <h2 id="teacher-title">Clave de rutas</h2>
+            </div>
+            <button id="teacher-exit" class="button compact" type="button">Salir</button>
+          </div>
+          <p class="warning">Esta información debe mantenerse fuera de la versión pública si se quiere ocultar la clave al alumnado.</p>
+          <div class="button-row">
+            <button id="copy-teacher-key" class="button primary" type="button">Copiar clave completa</button>
+            <button id="clear-storage" class="button danger" type="button">Borrar localStorage</button>
+          </div>
+        </div>
+
+        <section class="panel" aria-labelledby="teacher-tools-title">
+          <h2 id="teacher-tools-title">Herramientas</h2>
+          <div class="tool-grid">
+            <div class="tool-box">
+              <h3>Generar ubicación de ejemplo</h3>
+              <button id="generate-code" class="button" type="button">Generar ubicación</button>
+              <output id="generated-code" class="output-box" aria-live="polite"></output>
+            </div>
+            <div class="tool-box">
+              <h3>Probar normalización</h3>
+              <div class="field">
+                <label for="normalize-input">Texto de prueba</label>
+                <input id="normalize-input" type="text" autocomplete="off" spellcheck="false">
+              </div>
+              <button id="normalize-button" class="button" type="button">Normalizar</button>
+              <output id="normalize-output" class="output-box" aria-live="polite"></output>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="teacher-groups-title">
+          <h2 id="teacher-groups-title">Grupos y pruebas</h2>
+          <div id="teacher-content" class="teacher-content"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="challenges.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
