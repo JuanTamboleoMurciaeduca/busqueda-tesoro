@@ -26,8 +26,8 @@ window.TREASURE_ROUTES = {
           "4 subredes necesitan tomar 2 bits de la parte de hosts.",
           "/24 + 2 = /26."
         ],
-        "successMessage": "Correcto. Id a: Debajo de la escala de incendios pabellón viejo. Cuando encontréis el código físico, verificadlo aquí.",
-        "unlockedLocation": "Debajo de la escala de incendios pabellón viejo",
+        "successMessage": "Correcto. Id a: Debajo de la escalera de incendios pabellón viejo. Cuando encontréis el código físico, verificadlo aquí.",
+        "unlockedLocation": "Debajo de la escalera de incendios pabellón viejo",
         "locationCode": "G01-K7M2Q9",
         "teacherNotes": "FLSM: /24 dividido en 4 subredes iguales."
       },
@@ -62,8 +62,8 @@ window.TREASURE_ROUTES = {
           "Un /26 tiene bloques de 64 direcciones.",
           "El bloque va de .128 a .191."
         ],
-        "successMessage": "Correcto. Id a: Debajo de primera pizarra frente a las pistas de fútbol. Cuando encontréis el código físico, verificadlo aquí.",
-        "unlockedLocation": "Debajo de primera pizarra frente a las pistas de fútbol",
+        "successMessage": "Correcto. Id a: Debajo de la primera pizarra frente a las pistas de fútbol. Cuando encontréis el código físico, verificadlo aquí.",
+        "unlockedLocation": "Debajo de la primera pizarra frente a las pistas de fútbol",
         "locationCode": "G01-R4X8T1",
         "teacherNotes": "Direccionamiento: broadcast de una subred /26."
       },
@@ -223,8 +223,8 @@ window.TREASURE_ROUTES = {
           "Se usa dentro de corchetes.",
           "Ejemplo: [ \"$n\" -gt 10 ]."
         ],
-        "successMessage": "Correcto. Id a: Papelera marrón cerca de la escalera de incendios pabellón viejo. Cuando encontréis el código físico, verificadlo aquí.",
-        "unlockedLocation": "Papelera marrón cerca de la escalera de incendios pabellón viejo",
+        "successMessage": "Correcto. Id a: Papelera marrón cerca de la escalera de incendios del pabellón viejo. Cuando encontréis el código físico, verificadlo aquí.",
+        "unlockedLocation": "Papelera marrón cerca de la escalera de incendios del pabellón viejo",
         "locationCode": "G02-N9C3L7",
         "teacherNotes": "Bash: condicional numérico."
       },
@@ -477,8 +477,8 @@ window.TREASURE_ROUTES = {
           "No es -eq, porque -eq es numérico.",
           "Para texto se usa = o ==."
         ],
-        "successMessage": "Correcto. Id a: Cuadro eléctrico mesas sin pintar. Cuando encontréis el código físico, verificadlo aquí.",
-        "unlockedLocation": "Cuadro eléctrico mesas sin pintar",
+        "successMessage": "Correcto. Id a: Cuadro eléctrico cerca de la mesa sin pintar. Cuando encontréis el código físico, verificadlo aquí.",
+        "unlockedLocation": "Cuadro eléctrico cerca de la mesa sin pintar",
         "locationCode": "G04-R6B1X8",
         "teacherNotes": "Bash: comparación de cadenas."
       }
@@ -503,8 +503,8 @@ window.TREASURE_ROUTES = {
           "2^5 - 2 = 30, no basta.",
           "2^6 - 2 = 62, sí basta."
         ],
-        "successMessage": "Correcto. Id a: Detrás pizarras cerca de la fuente. Cuando encontréis el código físico, verificadlo aquí.",
-        "unlockedLocation": "Detrás pizarras cerca de la fuente",
+        "successMessage": "Correcto. Id a: Detrás de las pizarras cerca de la fuente. Cuando encontréis el código físico, verificadlo aquí.",
+        "unlockedLocation": "Detrás de las pizarras cerca de la fuente",
         "locationCode": "G05-L6B2R8",
         "teacherNotes": "VLSM: prefijo para 60 hosts."
       },
