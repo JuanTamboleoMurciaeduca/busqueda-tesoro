@@ -1,5 +1,5 @@
 /*
-  Rutas de pistas - aplicación estática.
+  Rutas de pistas - aplicación estática de redes y Bash.
 
   Seguridad: esta web no tiene backend. Las respuestas, rutas y ubicaciones
   pueden inspeccionarse en el código fuente. Es válida para una dinámica
@@ -140,6 +140,14 @@ function showRouteScreen() {
 }
 
 function showChallengeScreen(challengeId) {
+  if (!isChallengeUnlocked(challengeId)) {
+    activeChallengeId = "";
+    progress.activeChallengeId = "";
+    saveProgress();
+    showRouteScreen();
+    return;
+  }
+
   activeChallengeId = challengeId;
   progress.activeChallengeId = challengeId;
   saveProgress();
@@ -181,7 +189,12 @@ function renderRoute() {
   elements.locationCount.textContent = String(verifiedCount);
   elements.challengeList.innerHTML = "";
 
-  challenges.forEach((challenge, index) => {
+  reconcileUnlockedIds();
+
+  const visibleChallenges = challenges.filter((challenge) => progress.unlockedIds.includes(challenge.challengeId));
+
+  visibleChallenges.forEach((challenge) => {
+    const originalIndex = challenges.findIndex((item) => item.challengeId === challenge.challengeId);
     const solved = progress.solvedIds.includes(challenge.challengeId);
     const verified = isCodeVerified(challenge);
     const item = document.createElement("li");
@@ -191,13 +204,13 @@ function renderRoute() {
     titleBox.className = "challenge-title-row";
 
     const title = document.createElement("strong");
-    title.textContent = `${index + 1}. ${challenge.title}`;
+    title.textContent = `${originalIndex + 1}. ${challenge.title}`;
 
     const detail = document.createElement("span");
     detail.className = "meta";
     detail.textContent = solved
       ? `Ubicación desbloqueada: ${progress.unlockedLocations[challenge.challengeId]} · ${verified ? "código verificado" : "código pendiente"}`
-      : "Pregunta básica de HTML/CSS";
+      : "Prueba actual. Las siguientes aparecerán al resolver esta.";
 
     const status = document.createElement("span");
     status.className = `status ${verified ? "verified" : solved ? "solved" : "pending"}`;
@@ -215,6 +228,13 @@ function renderRoute() {
     elements.challengeList.appendChild(item);
   });
 
+  if (visibleChallenges.length < challenges.length) {
+    const lockedInfo = document.createElement("li");
+    lockedInfo.className = "challenge-item muted";
+    lockedInfo.textContent = `${challenges.length - visibleChallenges.length} prueba(s) aún oculta(s). Se desbloquean en orden.`;
+    elements.challengeList.appendChild(lockedInfo);
+  }
+
   renderFinal();
 }
 
@@ -226,7 +246,7 @@ function renderChallenge() {
   }
 
   const solved = progress.solvedIds.includes(challenge.challengeId);
-  elements.challengeType.textContent = "Pregunta básica de HTML/CSS";
+  elements.challengeType.textContent = "Pregunta de redes y Bash";
   elements.challengeTitle.textContent = challenge.title;
   elements.challengeStatement.textContent = challenge.statement;
   elements.answerInput.value = "";
@@ -311,6 +331,7 @@ function checkAnswer(event) {
   if (!progress.solvedIds.includes(challenge.challengeId)) {
     progress.solvedIds.push(challenge.challengeId);
   }
+  unlockNextChallenge(challenge.challengeId);
   progress.unlockedLocations[challenge.challengeId] = challenge.unlockedLocation;
   completeIfFinished();
   saveProgress();
@@ -528,6 +549,47 @@ function showNormalizedText() {
   elements.normalizeOutput.textContent = `Original: ${original}\nNormalizado: ${normalizeAnswer(original)}`;
 }
 
+function reconcileUnlockedIds() {
+  if (!progress.groupCode || !routes[progress.groupCode]) {
+    return;
+  }
+  progress.unlockedIds = getSequentialUnlockedIds(progress.groupCode, progress.solvedIds);
+}
+
+function getSequentialUnlockedIds(groupCode, solvedIds) {
+  const group = routes[groupCode];
+  if (!group) {
+    return [];
+  }
+
+  const unlocked = [];
+  for (const challenge of group.challenges) {
+    unlocked.push(challenge.challengeId);
+    if (!solvedIds.includes(challenge.challengeId)) {
+      break;
+    }
+  }
+  return unlocked;
+}
+
+function isChallengeUnlocked(challengeId) {
+  reconcileUnlockedIds();
+  return progress.unlockedIds.includes(challengeId);
+}
+
+function unlockNextChallenge(challengeId) {
+  const group = routes[progress.groupCode];
+  if (!group) {
+    return;
+  }
+
+  const currentIndex = group.challenges.findIndex((challenge) => challenge.challengeId === challengeId);
+  const nextChallenge = group.challenges[currentIndex + 1];
+  if (nextChallenge && !progress.unlockedIds.includes(nextChallenge.challengeId)) {
+    progress.unlockedIds.push(nextChallenge.challengeId);
+  }
+}
+
 function getActiveChallenge() {
   const group = routes[progress.groupCode];
   if (!group) {
@@ -590,16 +652,14 @@ function loadProgress() {
 }
 
 function saveProgress() {
-  if (progress.groupCode && routes[progress.groupCode]) {
-    progress.unlockedIds = routes[progress.groupCode].challenges.map((challenge) => challenge.challengeId);
-  }
+  reconcileUnlockedIds();
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
 }
 
 function createProgress(groupCode) {
   return {
     groupCode,
-    unlockedIds: routes[groupCode].challenges.map((challenge) => challenge.challengeId),
+    unlockedIds: routes[groupCode].challenges.length > 0 ? [routes[groupCode].challenges[0].challengeId] : [],
     solvedIds: [],
     verifiedCodes: {},
     hintsUsed: {},

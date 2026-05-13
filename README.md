@@ -1,114 +1,138 @@
-# Rutas de pistas HTML/CSS
+# Rutas de pistas - Redes y Bash
 
-Web estática para una actividad por grupos de 1º de Bachillerato. Cada grupo entra con `G01`, `G02`, `G03`, `G04` o `G05`, resuelve pruebas básicas de HTML/CSS, desbloquea una ubicación física y verifica el código encontrado allí.
+Web estática para una actividad por grupos. Los alumnos introducen su código de grupo, resuelven pruebas de forma secuencial y desbloquean una ubicación física. Al llegar a esa ubicación encuentran un código físico que deben verificar en la web.
 
-## Probar la web
+## Grupos disponibles
 
-Abre `index.html` con doble clic. La aplicación funciona sin servidor y guarda el progreso en `localStorage`.
+- G01
+- G02
+- G03
+- G04
+- G05
 
-También puedes usar un servidor local:
+Cada grupo tiene 6 pruebas. Inicialmente solo aparece la primera. Cuando se resuelve una prueba, se desbloquea la siguiente. Las pruebas posteriores no se muestran hasta que corresponda.
+
+
+## Desbloqueo secuencial
+
+La actividad está configurada para que el alumnado no pueda abrir todas las pruebas desde el principio.
+
+Funcionamiento:
+
+1. Al entrar con G01, G02, G03, G04 o G05, solo aparece la prueba 1.
+2. Al resolver la prueba 1, aparece la prueba 2.
+3. Al resolver la prueba 2, aparece la prueba 3.
+4. El proceso continúa hasta la prueba 6.
+
+La verificación del código físico encontrado en la ubicación no bloquea la aparición de la siguiente pregunta. La siguiente pregunta se desbloquea al resolver correctamente la pregunta anterior.
+
+## Contenidos de las pruebas
+
+Las preguntas se han cambiado a:
+
+- FLSM: división de redes en subredes iguales.
+- VLSM: elección de prefijos según número de hosts.
+- Direccionamiento IPv4: primera IP utilizable, dirección de red y broadcast.
+- Bash: variables, bucles `for`, condicionales `if`, operadores y pruebas básicas.
+
+## Cómo probar localmente
+
+Abre `index.html` en el navegador. También puedes lanzar un servidor local desde la carpeta del proyecto:
 
 ```bash
-python -m http.server 8000
+python3 -m http.server 8000
 ```
 
-Después abre `http://localhost:8000`.
+Después entra en:
 
-## Desplegar en GitHub Pages
+```text
+http://localhost:8000
+```
 
-1. Sube `index.html`, `style.css`, `app.js` y `challenges.js` a la raíz del repositorio.
-2. En GitHub, entra en `Settings` > `Pages`.
-3. Elige `Deploy from a branch`.
-4. Selecciona la rama principal y la carpeta raíz.
-5. Guarda y espera a que GitHub publique la URL.
+## Cómo editar preguntas
 
-No subas `teacher-key.md` si quieres ocultar la clave al alumnado.
+Edita `challenges.js`.
 
-## Editar preguntas
-
-Las pruebas están en `challenges.js`. Cada prueba tiene esta forma:
+Cada prueba tiene esta estructura:
 
 ```js
 {
   group: "G01",
   challengeId: "G01-P01",
-  title: "Etiqueta para un enlace",
-  statement: "¿Qué etiqueta HTML se usa para crear un enlace?",
-  acceptedAnswers: ["a", "<a>", "etiqueta a"],
-  hints: ["Tiene un atributo llamado href.", "Es una etiqueta de una sola letra."],
-  successMessage: "Correcto. Id a: Debajo de la escala de incendios pabellón viejo. Cuando encontréis el código físico, verificadlo aquí.",
-  unlockedLocation: "Debajo de la escala de incendios pabellón viejo",
+  title: "Nueva máscara FLSM",
+  statement: "Pregunta que verá el alumnado",
+  acceptedAnswers: ["/26", "26", "255.255.255.192"],
+  hints: ["Pista 1", "Pista 2"],
+  successMessage: "Correcto. Id a: ...",
+  unlockedLocation: "Ubicación física",
   locationCode: "G01-K7M2Q9",
-  teacherNotes: "Pregunta básica sobre enlaces HTML."
+  teacherNotes: "Nota interna"
 }
 ```
 
-Mantén `challengeId` único y conserva 6 pruebas por grupo si quieres que el resumen final siga el formato previsto.
+## Cómo editar respuestas aceptadas
 
-## Editar respuestas aceptadas
+Añade variantes en `acceptedAnswers`.
 
-Añade variantes en `acceptedAnswers`. La corrección ignora mayúsculas/minúsculas, tildes, espacios múltiples y varios signos no esenciales.
+La corrección normaliza:
 
-Ejemplos:
+- mayúsculas y minúsculas;
+- tildes;
+- espacios múltiples;
+- parte de la puntuación;
+- los signos `<` y `>`.
 
-- Para una etiqueta de párrafo: `["p", "<p>", "etiqueta p"]`
-- Para una propiedad CSS: `["color", "color:", "propiedad color"]`
-- Para una clase CSS: `[".caja", "punto caja", "selector .caja"]`
-
-## Editar ubicaciones y códigos
-
-Cambia `unlockedLocation`, `locationCode` y el texto de `successMessage` en cada prueba. La ubicación debe aparecer dentro del mensaje para que el texto visto por el alumnado sea claro.
+Para direcciones IP, conviene incluir la dirección con puntos y también una variante con espacios si quieres máxima tolerancia.
 
 Ejemplo:
 
 ```js
-successMessage: "Correcto. Id a: Mesa ajedrez. Cuando encontréis el código físico, verificadlo aquí.",
-unlockedLocation: "Mesa ajedrez",
-locationCode: "G01-Z2C7N5"
+acceptedAnswers: ["192.168.10.65", "192 168 10 65"]
 ```
 
-Reparte las ubicaciones por grupo para evitar que todos vayan al mismo sitio a la vez. El resumen final aparece cuando el grupo ha resuelto todas las preguntas y ha verificado todos sus códigos.
+## Cómo editar ubicaciones y códigos físicos
+
+En cada prueba cambia:
+
+```js
+unlockedLocation: "Mesa ajedrez",
+locationCode: "G01-Z2C7N5",
+successMessage: "Correcto. Id a: Mesa ajedrez. Cuando encontréis el código físico, verificadlo aquí."
+```
+
+El código físico debe coincidir exactamente con el cartel que pongas en la ubicación.
 
 ## Modo profesor
 
-Escribe `PROFESOR` como código de grupo. El modo profesor muestra:
+Escribe `PROFESOR` como código de grupo.
 
-- Grupo.
-- Prueba.
-- Pregunta.
-- Respuestas aceptadas.
-- Ubicación desbloqueada.
-- Código de ubicación.
-- Notas del profesor.
-- Herramienta para generar ubicaciones y códigos de ejemplo.
-- Herramienta para probar la normalización de respuestas.
-- Botón para borrar `localStorage`.
+El modo profesor muestra:
 
-## Progreso guardado
+- grupos;
+- preguntas;
+- respuestas aceptadas;
+- ubicaciones;
+- códigos físicos;
+- notas del profesor;
+- herramienta para probar normalización.
 
-La web guarda en `localStorage`:
+## Archivo `teacher-key.md`
 
-- Código de grupo.
-- Pruebas desbloqueadas.
-- Pruebas resueltas.
-- Códigos verificados.
-- Pistas usadas.
-- Ubicaciones desbloqueadas.
-- Fecha/hora de inicio.
-- Fecha/hora de finalización.
+Contiene la clave completa de la actividad.
 
-Si se recarga la página, el navegador recuerda el progreso del grupo.
+No subas `teacher-key.md` a GitHub Pages si quieres ocultar soluciones, ubicaciones y códigos físicos.
 
-## Seguridad
+## Despliegue en GitHub Pages
 
-Una web estática no puede ocultar completamente preguntas, respuestas, ubicaciones ni rutas si el alumnado inspecciona el código fuente.
+1. Sube estos archivos al repositorio.
+2. En GitHub, entra en `Settings`.
+3. Abre `Pages`.
+4. En `Build and deployment`, selecciona la rama principal.
+5. Guarda la configuración.
+6. Abre la URL pública que genera GitHub Pages.
 
-Esta web es adecuada para una actividad educativa, no para una evaluación segura. Para una evaluación con seguridad real haría falta un backend con validación en servidor.
+## Limitación de seguridad
 
-## Consejos de uso
+Esta app es estática. Todo lo que hay en `challenges.js` puede inspeccionarse desde el navegador.
 
-- Prueba los cinco grupos antes de la actividad.
-- Cambia las ubicaciones inventadas por lugares reales del centro.
-- Conserva `teacher-key.md` en privado.
-- Explica que las pistas usadas aparecen en el código final.
-- Pide a cada grupo que copie el resumen final o exporte el JSON al terminar.
+Es válida para una actividad educativa y cooperativa. No es válida como evaluación segura si el alumnado puede inspeccionar el código fuente.
